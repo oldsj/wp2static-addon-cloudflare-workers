@@ -1,16 +1,28 @@
-name: codequality
+name: Build Zip
 
-on: push
-
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**.md'
 jobs:
-  test:
+  build:
+    timeout-minutes: 15
+
     runs-on: ubuntu-latest
+    name: Build Zip
 
     strategy:
       matrix:
-        php: ["7.4", "8.0"]
-
-    name: PHP-${{ matrix.php }} 
+        php: ["8.0"]
 
     steps:
     - name: Checkout code
@@ -29,11 +41,14 @@ jobs:
         coverage: xdebug
         extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
 
-    - name: Validate Composer
-      run: composer validate --strict
-
     - name: Install PHP dependencies
       run: composer install --no-interaction --ignore-platform-reqs
 
-    - name: Run our Linter and PHPStan
-      run: composer run-script test
+    - name: Build Addon
+      run: composer build wp2static-addon
+
+      - name: Archive zip
+        uses: actions/upload-artifact@v2
+        with:
+          name: Addon Zip
+          path: ~/Downloads/wp2static-addon.zip
