@@ -47,8 +47,8 @@ jobs:
     - name: Build Addon
       run: composer build wp2static-addon
 
-      - name: Archive zip
-        uses: actions/upload-artifact@v2
-        with:
-          name: Addon Zip
-          path: ~/Downloads/wp2static-addon.zip
+    - name: Archive zip
+      uses: actions/upload-artifact@v2
+      with:
+        name: Addon Zip
+        path: ~/Downloads/wp2static-addon.zip
